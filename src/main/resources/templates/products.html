@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{app.products.catalog}">Catálogo de Productos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card {
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .product-img {
+            height: 200px;
+            object-fit: cover;
+        }
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .language-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .language-btn {
+            padding: 4px 10px;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .language-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .language-btn.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm">
+    <div class="container">
+        <span class="navbar-brand fw-semibold" th:text="#{app.products.catalog}">Catálogo de Productos</span>
+        <div class="d-flex gap-3 align-items-center">
+            <div class="language-buttons">
+                <a th:href="@{/products(lang='es')}" class="language-btn" th:classappend="${#locale.language} == 'es' ? 'active' : ''" th:text="#{app.menu.Spanish}">ES</a>
+                <a th:href="@{/products(lang='en')}" class="language-btn" th:classappend="${#locale.language} == 'en' ? 'active' : ''" th:text="#{app.menu.English}">EN</a>
+                <a th:href="@{/products(lang='pt')}" class="language-btn" th:classappend="${#locale.language} == 'pt' ? 'active' : ''" th:text="#{app.menu.Portuguese}">PT</a>
+            </div>
+            <span class="text-white"><span th:text="#{app.products.hello}">Hola</span>, <span th:text="${username}">Usuario</span></span>
+            <a th:href="@{/user}" class="btn btn-light btn-sm" th:text="#{app.products.myPanel}">Mi Panel</a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-outline-light btn-sm" th:text="#{app.menu.logout}">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <!-- Filtros -->
+    <div class="filter-section">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <form th:action="@{/products/search}" method="get" class="d-flex gap-2">
+                    <input type="text" name="keyword" class="form-control"
+                           th:value="${keyword}"
+                           th:placeholder="#{app.products.search}" />
+                    <button type="submit" class="btn btn-primary" th:text="#{app.products.searchBtn}">
+                        Buscar
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-4 text-end">
+                <a th:href="@{/products}" class="btn btn-outline-secondary" th:text="#{app.products.viewAll}">
+                    Ver Todos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categorías -->
+    <div class="mb-4" th:if="${categories != null and !categories.isEmpty()}">
+        <h5 class="mb-3" th:text="#{app.products.filterByCategory}">Filtrar por Categoría:</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a th:href="@{/products}"
+               th:classappend="${selectedCategory == null} ? 'btn-primary' : 'btn-outline-primary'"
+               class="btn"
+               th:text="#{app.products.all}">
+                Todas
+            </a>
+            <a th:each="cat : ${categories}"
+               th:href="@{/products(category=${cat.id})}"
+               th:text="${cat.getLocalizedName(currentLocale)}"
+               th:classappend="${selectedCategory != null and selectedCategory == cat.id} ? 'btn-primary' : 'btn-outline-primary'"
+               class="btn">
+                Categoría
+            </a>
+        </div>
+    </div>
+
+    <!-- Mensaje si hay búsqueda -->
+    <div class="alert alert-info" th:if="${keyword != null and keyword != ''}">
+        <span th:text="#{app.products.searchResults}">Resultados de búsqueda para:</span> <strong th:text="${keyword}"></strong>
+        <span th:text="'(' + ${products.size()} + ' ' + #{app.products.found} + ')'"></span>
+    </div>
+
+    <!-- Lista de productos -->
+    <div th:if="${products != null and !products.isEmpty()}">
+        <h4 class="mb-4">
+            <span th:text="${products.size()} + ' ' + #{app.products.availableProducts}"></span>
+        </h4>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 col-xl-3" th:each="product : ${products}">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img th:src="${product.imageUrl}"
+                             th:alt="${product.getLocalizedName(currentLocale)}"
+                             class="card-img-top product-img" />
+                        <span class="badge bg-primary category-badge"
+                              th:if="${product.category != null}"
+                              th:text="${product.category.getLocalizedName(currentLocale)}">
+                            Categoría
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title" th:text="${product.getLocalizedName(currentLocale)}">Nombre del Producto</h5>
+                        <p class="card-text text-muted small flex-grow-1"
+                           th:text="${#strings.abbreviate(product.getLocalizedDescription(currentLocale), 80)}">
+                            Descripción del producto...
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="text-primary mb-0">
+                                $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+                            </h4>
+                            <a th:href="@{'/products/' + ${product.id}}"
+                               class="btn btn-primary btn-sm"
+                               th:text="#{app.products.viewDetails}">
+                                Ver Detalle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje si no hay productos -->
+    <div class="alert alert-warning text-center py-5"
+         th:if="${products == null or products.isEmpty()}">
+        <h4 th:text="#{app.products.noProducts}">No hay productos disponibles</h4>
+        <p class="mb-0" th:text="#{app.products.tryAgain}">Por favor, intenta con otra búsqueda o categoría.</p>
+    </div>
+
+    <!-- Botones de navegación -->
+    <div class="mt-4 d-flex gap-2">
+        <a th:href="@{/user}" class="btn btn-secondary" th:text="#{app.products.backToPanel}">
+            Volver al Panel
+        </a>
+        <a th:href="@{/admin}" class="btn btn-outline-secondary"
+           th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+           th:text="#{app.admin.title}">
+            Panel Admin
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

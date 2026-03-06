@@ -3,31 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panel ADMIN</title>
+    <title th:text="#{app.admin.title}">Panel ADMIN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .language-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-btn {
+            padding: 6px 12px;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .language-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .language-btn.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+    </style>
 </head>
 <body style="background: linear-gradient(120deg, #111827, #1f2937); min-height: 100vh;">
 <nav class="navbar navbar-expand-lg bg-black navbar-dark border-bottom border-secondary-subtle">
-    <div class="container">
-        <span class="navbar-brand fw-semibold">Panel ADMIN</span>
-        <form th:action="@{/logout}" method="post" class="d-flex">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button type="submit" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
-        </form>
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand fw-semibold" th:text="#{app.admin.title}">Panel ADMIN</span>
+        <div class="d-flex gap-3 align-items-center">
+            <div class="language-buttons">
+                <a th:href="@{/admin?lang=es}" class="language-btn" th:classappend="${#locale.language} == 'es' ? 'active' : ''" th:text="#{app.menu.Spanish}">Español</a>
+                <a th:href="@{/admin?lang=en}" class="language-btn" th:classappend="${#locale.language} == 'en' ? 'active' : ''" th:text="#{app.menu.English}">English</a>
+                <a th:href="@{/admin?lang=pt}" class="language-btn" th:classappend="${#locale.language} == 'pt' ? 'active' : ''" th:text="#{app.menu.Portuguese}">Português</a>
+            </div>
+            <form th:action="@{/logout}" method="post" class="d-flex">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-outline-light btn-sm" th:text="#{app.menu.logout}">Cerrar sesión</button>
+            </form>
+        </div>
     </div>
 </nav>
 
 <div class="container py-5">
-    <div class="card border-0 shadow-lg rounded-4 bg-light">
+    <div class="card border-0 shadow-lg rounded-4 bg-light mb-4">
         <div class="card-body p-5">
-            <h2 class="fw-bold mb-2">Bienvenido al panel ADMIN</h2>
-            <p class="text-muted mb-4">Ingresaste con el usuario: <strong th:text="${username}"></strong></p>
-            <div class="alert alert-warning border-0">
+            <h2 class="fw-bold mb-2" th:text="#{app.admin.welcome}">Bienvenido al panel ADMIN</h2>
+            <p class="text-muted mb-4"><span th:text="#{app.logged.as}">Ingresaste con el usuario:</span> <strong th:text="${username}"></strong></p>
+            <div class="alert alert-warning border-0" th:text="#{app.admin.description}">
                 Esta zona es exclusiva para el rol ADMIN.
             </div>
-            <a href="/public" class="btn btn-dark">Volver a página pública</a>
         </div>
     </div>
+
+    <!-- Servicios de Administración -->
+    <h3 class="fw-bold mb-4 text-white" th:text="#{app.admin.services.title}">Panel de Administración</h3>
+    <div class="row g-4">
+        <!-- Tarjeta: Gestión de Usuarios -->
+        <div class="col-md-6 col-lg-3">
+            <a href="/profile" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm hover-shadow" style="cursor: pointer; transition: all 0.3s;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-people text-primary" viewBox="0 0 16 16">
+                                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                            </svg>
+                        </div>
+                        <h5 class="fw-bold mb-2" th:text="#{app.profile.title}">Mi Perfil</h5>
+                        <p class="text-muted small mb-0" th:text="#{app.profile.desc}">Gestiona tu información personal</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta: Reportes (Tickets de Soporte) -->
+        <div class="col-md-6 col-lg-3">
+            <a href="/support" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm hover-shadow" style="cursor: pointer; transition: all 0.3s;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-graph-up text-success" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
+                            </svg>
+                        </div>
+                        <h5 class="fw-bold mb-2" th:text="#{app.support.admin.title}">Tickets de Soporte</h5>
+                        <p class="text-muted small mb-0" th:text="#{app.support.admin.desc}">Gestiona reportes de usuarios</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta: Catálogo de Productos -->
+        <div class="col-md-6 col-lg-3">
+            <a href="/products" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm hover-shadow" style="cursor: pointer; transition: all 0.3s;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-shield-lock text-danger" viewBox="0 0 16 16">
+                                <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+                                <path d="M9.5 6.5a1.5 1.5 0 0 1-1 1.415l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99a1.5 1.5 0 1 1 2-1.415"/>
+                            </svg>
+                        </div>
+                        <h5 class="fw-bold mb-2" th:text="#{app.catalog.title}">Catálogo</h5>
+                        <p class="text-muted small mb-0" th:text="#{app.catalog.desc}">Ver productos y categorías</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta: Dashboard de Usuario -->
+        <div class="col-md-6 col-lg-3">
+            <a href="/user" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm hover-shadow" style="cursor: pointer; transition: all 0.3s;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-cpu text-info" viewBox="0 0 16 16">
+                                <path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0m-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
+                            </svg>
+                        </div>
+                        <h5 class="fw-bold mb-2" th:text="#{app.user.dashboard}">Panel Usuario</h5>
+<p class="text-muted small mb-0" th:text="#{app.user.dashboard.desc}">Vista de usuario estándar</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a th:href="@{/public}" class="btn btn-light" th:text="#{app.menu.home}">Volver a página pública</a>
+    </div>
 </div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
