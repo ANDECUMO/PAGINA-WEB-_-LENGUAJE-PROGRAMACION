@@ -1,26 +1,26 @@
 # Aplicación Spring Boot - Sistema de Restaurante
 
-## 📋 Resumen de Implementación
+##  Resumen de Implementación
 
 Se ha implementado **completamente** una aplicación Spring Boot que cumple con TODOS los requerimientos funcionales especificados.
 
-## ✅ Requerimientos Funcionales Cumplidos
+## Requerimientos Funcionales Cumplidos
 
 ### **RF1-RF3: Módulo de Autenticación**
-- ✅ **RF1**: Registro de nuevos usuarios con email y contraseña
-- ✅ **RF2**: Inicio de sesión con credenciales registradas
-- ✅ **RF3**: Recuperación de contraseña por correo electrónico
+-  **RF1**: Registro de nuevos usuarios con email y contraseña
+- **RF2**: Inicio de sesión con credenciales registradas
+- **RF3**: Recuperación de contraseña por correo electrónico
 
 ### **RF4-RF6: Módulo de Catálogo de Productos**
-- ✅ **RF4**: Lista de productos organizados por categorías
-- ✅ **RF5**: Vista detallada de productos (imagen, descripción, precio)
-- ✅ **RF6**: Búsqueda de productos por nombre o palabra clave
+- **RF4**: Lista de productos organizados por categorías
+- **RF5**: Vista detallada de productos (imagen, descripción, precio)
+- **RF6**: Búsqueda de productos por nombre o palabra clave
 
 ### **Arquitectura y Tecnología**
-- ✅ Backend API RESTful con Spring Boot
-- ✅ Persistencia con JPA/Hibernate
-- ✅ Base de datos PostgreSQL configurada (actualmente usa H2 para pruebas)
-- ✅ Seguridad con JWT y Spring Security
+- Backend API RESTful con Spring Boot
+- Persistencia con JPA/Hibernate
+- Base de datos PostgreSQL configurada (actualmente usa H2 para pruebas)
+- Seguridad con JWT y Spring Security
 - ⚠️ Frontend: Requiere desarrollo por separado (Angular/React/Vue)
 
 ---

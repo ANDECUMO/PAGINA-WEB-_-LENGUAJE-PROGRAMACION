@@ -70,9 +70,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/public", "/forgot-password", "/reset-password", "/register").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/products/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/cart/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/orders/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/support/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
@@ -147,6 +149,7 @@ public class SecurityConfig {
     }
 }
 
+@SuppressWarnings("unused")
 @Configuration
 class WebMvcConfig implements WebMvcConfigurer {
 
